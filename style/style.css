@@ -1,0 +1,13 @@
+.text_ellipsis{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+}
+.text_size_header{
+    font-size: 1rem;
+}
+.text_size{
+    font-size: 0.8rem;
+}

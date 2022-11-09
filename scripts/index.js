@@ -1,4 +1,4 @@
-import recipes from "../datas/recipes.js";
+import recipes from "../data/recipes.js";
 const main = document.querySelector("#main");
 
 const getDatas = async () => {
@@ -14,7 +14,7 @@ const displayDatas = async (recettes) => {
     //article.classList.add("card");
     article.classList.add("col");
     article.classList.add("gy-5");
-    article.style.height = "22rem";
+    article.style.height = "20rem";
 
     const card_img = document.createElement("img");
     card_img.classList.add("card-img-top");
@@ -34,11 +34,13 @@ const displayDatas = async (recettes) => {
 
     const name_recipe = document.createElement("h2");
     name_recipe.classList.add("col-8");
-    name_recipe.classList.add("fs-5");
+    name_recipe.classList.add("text_size_header");
+    name_recipe.textContent = recette.name;
+
     const time_recipe = document.createElement("span");
     time_recipe.classList.add("col-4");
     time_recipe.classList.add("fw-bold");
-    name_recipe.textContent = recette.name;
+    time_recipe.classList.add("text_size");
     time_recipe.innerHTML = `<i class="bi bi-clock"></i> ${recette.time} min`;
     div_card_title.appendChild(name_recipe);
     div_card_title.appendChild(time_recipe);
@@ -53,7 +55,7 @@ const displayDatas = async (recettes) => {
     div_list.classList.add("p-2");
 
     const div_desc = document.createElement("div");
-    div_desc.classList.add("col");
+    div_desc.classList.add("col-5");
     div_desc.classList.add("p-1");
 
     // ingrediants
@@ -61,6 +63,7 @@ const displayDatas = async (recettes) => {
     ingredients_list.classList.add("list-unstyled");
     recette.ingredients.forEach((igd) => {
       const ingredient_recipe = document.createElement("li");
+      ingredient_recipe.classList.add("text_size");
       if (igd.quantity) {
         if (igd.unit === "grammes") {
           ingredient_recipe.textContent = `${igd.ingredient}: ${igd.quantity}g`;
@@ -80,14 +83,10 @@ const displayDatas = async (recettes) => {
     div_list.appendChild(ingredients_list);
     // description
     const desc_recipe = document.createElement("p");
-    // desc_recipe.classList.add("text-truncate");
-
-    // div_desc.classList.add("text-truncate");
-    // div_desc.classList.add("w-50");
-    // div_desc.classList.add("h-50");
     desc_recipe.textContent = recette.description;
+    desc_recipe.classList.add("text_ellipsis");
+    desc_recipe.classList.add("text_size");
     div_desc.appendChild(desc_recipe);
-
     div_card_text.appendChild(div_list);
     div_card_text.appendChild(div_desc);
 
@@ -191,3 +190,29 @@ const init = async () => {
   getUstensiles(recipes);
 };
 init();
+
+const input_igr = document.querySelector("#dropdownMenuButton1");
+input_igr.addEventListener("click", () => {
+  input_igr.setAttribute("placeholder", "Rechercher un ingredient");
+  input_igr.setAttribute("value", "");
+  console.log("click");
+});
+
+const search = document.querySelector("#rechercher-une-recette");
+const tag_search = document.querySelector("#search_barre");
+
+// function search
+const searchPrincipale = () => {};
+
+// recherche classique
+
+search.addEventListener("click", () => {
+  console.log(tag_search.value.length);
+  if (tag_search.value.length > 2) {
+    console.log("c'est bon");
+    searchPrincipale();
+  } else {
+    alert("Veuillez entrer au moins 3 charactéres");
+    tag_search.value = "";
+  }
+});
