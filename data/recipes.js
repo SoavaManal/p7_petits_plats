@@ -32,7 +32,7 @@ const recipes = [
     description:
       "Mettre les glaçons à votre goût dans le blender, ajouter le lait, la crème de coco, le jus de 2 citrons et le sucre. Mixer jusqu'à avoir la consistence désirée",
     appliance: "Blender",
-    ustensils: ["cuillère à Soupe", "verres", "presse citron"],
+    ustensils: ["cuillère à soupe", "verres", "presse citron"],
   },
   {
     id: 2,
@@ -57,7 +57,7 @@ const recipes = [
         quantity: 1,
       },
       {
-        ingredient: "Citron Vert",
+        ingredient: "Citron vert",
         quantity: 5,
       },
       {
@@ -488,7 +488,7 @@ const recipes = [
     servings: 2,
     ingredients: [
       {
-        ingredient: "Saucisse bretonne ou de Toulouse",
+        ingredient: "Saucisse bretonne ou de toulouse",
         quantity: 2,
       },
       {
@@ -1418,7 +1418,7 @@ const recipes = [
         unit: "Litres",
       },
       {
-        ingredient: "Citron Vert",
+        ingredient: "Citron vert",
         quantity: 3,
       },
       {
