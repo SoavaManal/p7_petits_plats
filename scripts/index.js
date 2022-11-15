@@ -207,6 +207,12 @@ const search_method = (tag) => {
 
 const search = document.querySelector("#rechercher-une-recette");
 const tag_search = document.querySelector("#search_barre");
+// actualisation à chaque nouveau caractére
+tag_search.addEventListener("input", () => {
+  if (tag_search.value.length > 2) {
+    search_method(tag_search.value);
+  }
+});
 search.addEventListener("click", () => {
   if (tag_search.value.length > 2) {
     search_method(tag_search.value);
@@ -218,10 +224,17 @@ search.addEventListener("click", () => {
 
 // search par 3 tag
 
+const mot_cle = document.querySelector("#tag");
 // ingredients
 const select_igr = document.querySelector("#select_igr");
 select_igr.addEventListener("click", (e) => {
   let tag = e.target.value;
+
+  if (tag !== "") {
+    mot_cle.innerHTML += `<button class="btn btn-primary">
+    ${tag}<i class="bi bi-x-circle"></i></button>`;
+  }
+
   let array = [];
   array = recipes.filter((recipe) =>
     recipe.ingredients.some((rcp) =>
@@ -236,6 +249,12 @@ select_igr.addEventListener("click", (e) => {
 const select_ust = document.querySelector("#select_ust");
 select_ust.addEventListener("click", (e) => {
   let tag = e.target.value;
+
+  if (tag !== "") {
+    mot_cle.innerHTML += `<button class="btn btn-danger">
+    ${tag}<i class="bi bi-x-circle"></i></button>`;
+  }
+
   let array = [];
   array = recipes.filter((recipe) =>
     recipe.ustensils.some((ust) =>
@@ -250,6 +269,11 @@ select_ust.addEventListener("click", (e) => {
 const select_apr = document.querySelector("#select_apr");
 select_apr.addEventListener("click", (e) => {
   let tag = e.target.value;
+  if (tag !== "") {
+    mot_cle.innerHTML += `<button class="btn btn-success">
+    ${tag}<i class="bi bi-x-circle"></i></button>`;
+  }
+
   let array = [];
   array = recipes.filter((recipe) =>
     recipe.appliance.toLowerCase().includes(tag.toLowerCase())
