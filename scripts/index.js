@@ -7,7 +7,7 @@ const getDatas = async () => {
   return recipesArray;
 };
 
-const displayDatas = async (recettes) => {
+const displayData = async (recettes) => {
   recettes.forEach((recette) => {
     // article
     const article = document.createElement("article");
@@ -184,7 +184,7 @@ const getUstensiles = async (recipes) => {
 
 const init = async () => {
   const recipes = await getDatas();
-  await displayDatas(recipes);
+  await displayData(recipes);
   getIngredients(recipes);
   getAppareils(recipes);
   getUstensiles(recipes);
