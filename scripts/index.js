@@ -183,106 +183,29 @@ const init = async () => {
 };
 init();
 
-const search = document.querySelector("#rechercher-une-recette");
-const tag_search = document.querySelector("#search_barre");
-
-// Search with "for"
-const searchPrincipale = (tag) => {
-  let recipes_try = [];
-  for (let i = 0; i < recipes.length; i++) {
-    for (let j = 0; j < recipes[i].ingredients.length; j++) {
-      if (
-        recipes[i].ingredients[j].ingredient
-          .toLocaleLowerCase()
-          .includes(tag.toLowerCase())
-      ) {
-        if (!recipes_try.includes(recipes[i])) {
-          recipes_try.push(recipes[i]);
-        }
-      }
-    }
-    if (recipes[i].name.toLocaleLowerCase().includes(tag.toLowerCase())) {
-      if (!recipes_try.includes(recipes[i])) {
-        recipes_try.push(recipes[i]);
-      }
-    }
+const search_method = (tag) => {
+  let array = [];
+  array = recipes.filter((recipe) => {
     if (
-      recipes[i].description.toLocaleLowerCase().includes(tag.toLowerCase())
+      recipe.name.toLocaleLowerCase().includes(tag.toLowerCase()) ||
+      recipe.description.toLocaleLowerCase().includes(tag.toLowerCase()) ||
+      recipe.ingredients.some((rcp) =>
+        rcp.ingredient.toLowerCase().includes(tag.toLowerCase())
+      )
     ) {
-      if (!recipes_try.includes(recipes[i])) {
-        recipes_try.push(recipes[i]);
-      }
+      array.push(recipe);
     }
-  }
-  console.log(recipes_try);
-  main.innerHTML = "";
-  if (recipes_try.length > 0) {
-    displayData(recipes_try);
-  } else {
-    main.innerHTML = `<div><p class='text-danger'> Aucune recette ne correspond à votre critère… vous pouvez
-    chercher « tarte aux pommes », « poisson », etc.</div>`;
-  }
+  });
+  console.log(array);
 };
 
-// recherche classique
-
+const search = document.querySelector("#rechercher-une-recette");
+const tag_search = document.querySelector("#search_barre");
 search.addEventListener("click", () => {
   if (tag_search.value.length > 2) {
-    searchPrincipale(tag_search.value);
+    search_method(tag_search.value);
   } else {
-    alert("Veuillez entrer au moins 3 charactéres");
+    alert("veuillez entrer au moins 3 charachtéres");
     tag_search.value = "";
   }
-});
-
-const select_igr = document.querySelector("#select_igr");
-select_igr.addEventListener("change", (e) => {
-  let array = [];
-  let tag = e.target.value;
-  console.log(tag);
-  for (let i = 0; i < recipes.length; i++) {
-    for (let j = 0; j < recipes[i].ingredients.length; j++)
-      if (
-        recipes[i].ingredients[j].ingredient
-          .toLowerCase()
-          .includes(tag.toLowerCase())
-      ) {
-        array.push(recipes[i]);
-      }
-  }
-  console.log(array);
-  main.innerHTML = "";
-  displayData(array);
-});
-
-const select_ust = document.querySelector("#select_ust");
-select_ust.addEventListener("change", (e) => {
-  let array = [];
-  let tag = e.target.value;
-  console.log(tag);
-  for (let i = 0; i < recipes.length; i++) {
-    for (let j = 0; j < recipes[i].ustensils.length; j++) {
-      if (recipes[i].ustensils[j].toLowerCase().includes(tag.toLowerCase())) {
-        array.push(recipes[i]);
-      }
-    }
-  }
-  console.log(array);
-  main.innerHTML = "";
-  displayData(array);
-});
-
-const select_app = document.querySelector("#select_apr");
-select_app.addEventListener("change", (e) => {
-  let array = [];
-  let tag = e.target.value;
-  console.log(tag);
-  for (let i = 0; i < recipes.length; i++) {
-    if (recipes[i].appliance.toLowerCase().includes(tag.toLowerCase())) {
-      array.push(recipes[i]);
-    }
-  }
-  console.log(array);
-  main.innerHTML = "";
-  displayData(array);
 });
