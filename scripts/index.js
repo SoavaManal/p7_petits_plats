@@ -195,15 +195,14 @@ const search_method = (tag) => {
     ) {
       array.push(recipe);
     }
+    main.innerHTML = "";
+    if (array.length > 0) {
+      displayData(array);
+    } else {
+      main.innerHTML = `<div><p class='text-danger'> Aucune recette ne correspond à votre critère… vous pouvez
+      chercher « tarte aux pommes », « poisson », etc.</div>`;
+    }
   });
-  console.log(array);
-  main.innerHTML = "";
-  if (array.length > 0) {
-    displayData(array);
-  } else {
-    main.innerHTML = `<div><p class='text-danger'> Aucune recette ne correspond à votre critère… vous pouvez
-    chercher « tarte aux pommes », « poisson », etc.</div>`;
-  }
 };
 
 const search = document.querySelector("#rechercher-une-recette");
@@ -215,4 +214,46 @@ search.addEventListener("click", () => {
     alert("veuillez entrer au moins 3 charachtéres");
     tag_search.value = "";
   }
+});
+
+// search par 3 tag
+
+// ingredients
+const select_igr = document.querySelector("#select_igr");
+select_igr.addEventListener("click", (e) => {
+  let tag = e.target.value;
+  let array = [];
+  array = recipes.filter((recipe) =>
+    recipe.ingredients.some((rcp) =>
+      rcp.ingredient.toLowerCase().includes(tag.toLowerCase())
+    )
+  );
+  main.innerHTML = "";
+  displayData(array);
+});
+
+// ustensils
+const select_ust = document.querySelector("#select_ust");
+select_ust.addEventListener("click", (e) => {
+  let tag = e.target.value;
+  let array = [];
+  array = recipes.filter((recipe) =>
+    recipe.ustensils.some((ust) =>
+      ust.toLowerCase().includes(tag.toLowerCase())
+    )
+  );
+  main.innerHTML = "";
+  displayData(array);
+});
+
+// appareils
+const select_apr = document.querySelector("#select_apr");
+select_apr.addEventListener("click", (e) => {
+  let tag = e.target.value;
+  let array = [];
+  array = recipes.filter((recipe) =>
+    recipe.appliance.toLowerCase().includes(tag.toLowerCase())
+  );
+  main.innerHTML = "";
+  displayData(array);
 });
