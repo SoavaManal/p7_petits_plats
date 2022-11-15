@@ -1,13 +1,7 @@
 import recipes from "../data/recipes.js";
 const main = document.querySelector("#main");
 
-const getDatas = async () => {
-  const recipesArray = recipes;
-  console.log(recipesArray);
-  return recipesArray;
-};
-
-const displayData = async (recettes) => {
+const displayData = (recettes) => {
   recettes.forEach((recette) => {
     // article
     const article = document.createElement("article");
@@ -99,63 +93,35 @@ const displayData = async (recettes) => {
   });
 };
 
-const getIngredients = async (recipes) => {
-  const ingredient_list = document.querySelector("#ingredients-list");
+const getIngredients = async () => {
   let tab = [];
   recipes.forEach((recipe) => {
     recipe.ingredients.forEach((igd) => {
-      //console.log(igd.ingredient);
       let uppercase_igd = igd.ingredient.toUpperCase();
-      //console.log(uppercase_igd);
+
       if (!tab.includes(uppercase_igd)) {
         tab.push(uppercase_igd);
       }
     });
   });
-  console.log("Ingrediants: ", tab);
+  return tab;
+};
+
+const displayIngredient = async (tab) => {
+  const ingredient_list = document.querySelector("#select_igr");
+  ingredient_list.classList.add("text-light");
   for (let i = 0; i < tab.length; i++) {
-    const ingredients_li = document.createElement("li");
-    ingredients_li.classList.add("list-inline-item");
-    ingredients_li.classList.add("col-2");
-    // ingredients_li.classList.add("row-cols-3");
-    const ingredient_a = document.createElement("a");
-    //ingredient_a.classList.add("col");
-    ingredient_a.classList.add("text-light");
-    ingredient_a.classList.add("dropdown-item");
-    ingredient_a.setAttribute("src", "#");
+    const ingredients_opt = document.createElement("option");
     for (let j = 1; j < tab[i].length; j++) {
-      ingredient_a.textContent =
+      ingredients_opt.textContent =
         tab[i].substr(0, 1).toUpperCase() +
         tab[i].substr(1, tab[i].length).toLowerCase();
     }
-    ingredients_li.appendChild(ingredient_a);
-    ingredient_list.appendChild(ingredients_li);
+    ingredient_list.appendChild(ingredients_opt);
   }
 };
 
-const getAppareils = async (recipes) => {
-  const appareil_list = document.querySelector("#appareils-list");
-  let tab = [];
-  recipes.forEach((recipe) => {
-    if (!tab.includes(recipe.appliance)) {
-      tab.push(recipe.appliance);
-    }
-  });
-  console.log("Appareil: ", tab);
-  for (let i = 0; i < tab.length; i++) {
-    const appareil_li = document.createElement("li");
-    const appareil_a = document.createElement("a");
-    appareil_a.classList.add("text-light");
-    appareil_a.classList.add("dropdown-item");
-    appareil_a.setAttribute("src", "#");
-    appareil_a.textContent = tab[i];
-    appareil_li.appendChild(appareil_a);
-    appareil_list.appendChild(appareil_li);
-  }
-};
-
-const getUstensiles = async (recipes) => {
-  const ustensiles_list = document.querySelector("#ustensiles-list");
+const getUstensiles = async () => {
   let tab = [];
   recipes.forEach((recipe) => {
     recipe.ustensils.forEach((ust) => {
@@ -165,75 +131,54 @@ const getUstensiles = async (recipes) => {
       }
     });
   });
-  console.log("Ustensiles: ", tab);
+  return tab;
+};
+
+const displayUst = async (tab) => {
+  const ustensiles_list = document.querySelector("#select_ust");
+  ustensiles_list.classList.add("text-light");
   for (let i = 0; i < tab.length; i++) {
-    const ustensiles_li = document.createElement("li");
-    ustensiles_li.classList.add("list-inline-item");
-    ustensiles_li.classList.add("col-3");
-    const ustensiles_a = document.createElement("a");
-    ustensiles_a.classList.add("text-light");
-    ustensiles_a.classList.add("dropdown-item");
-    ustensiles_a.setAttribute("src", "#");
-    ustensiles_a.textContent =
+    const ustensiles_opt = document.createElement("option");
+
+    ustensiles_opt.textContent =
       tab[i].substr(0, 1).toUpperCase() +
       tab[i].substr(1, tab[i].length).toLowerCase();
-    ustensiles_li.appendChild(ustensiles_a);
-    ustensiles_list.appendChild(ustensiles_li);
+    ustensiles_list.appendChild(ustensiles_opt);
+  }
+};
+
+const getAppareil = async () => {
+  let tab = [];
+  recipes.forEach((recipe) => {
+    let uppercase_app = recipe.appliance.toUpperCase();
+    if (!tab.includes(uppercase_app)) {
+      tab.push(uppercase_app);
+    }
+  });
+  return tab;
+};
+
+const displayApp = async (tab) => {
+  const appareil_list = document.querySelector("#select_apr");
+  appareil_list.classList.add("text-light");
+  for (let i = 0; i < tab.length; i++) {
+    const appareil_opt = document.createElement("option");
+
+    appareil_opt.textContent =
+      tab[i].substr(0, 1).toUpperCase() +
+      tab[i].substr(1, tab[i].length).toLowerCase();
+    appareil_list.appendChild(appareil_opt);
   }
 };
 
 const init = async () => {
-  const recipes = await getDatas();
-  await displayData(recipes);
-  getIngredients(recipes);
-  getAppareils(recipes);
-  getUstensiles(recipes);
+  displayData(recipes);
+  const tab1 = await getIngredients();
+  await displayIngredient(tab1);
+  const tab2 = await getUstensiles();
+  await displayUst(tab2);
+  const tab3 = await getAppareil();
+  //console.log("tab3:" + tab3);
+  await displayApp(tab3);
 };
 init();
-
-const input_igr = document.querySelector("#dropdownMenuButton1");
-input_igr.addEventListener("click", () => {
-  input_igr.setAttribute("placeholder", "Rechercher un ingredient");
-  input_igr.setAttribute("value", "");
-  console.log("click");
-});
-
-const search = document.querySelector("#rechercher-une-recette");
-const tag_search = document.querySelector("#search_barre");
-
-// function search
-// Search with method array
-const array_mtd = (tag) => {
-  let array = recipes.filter((recipe) => {
-    if (
-      recipe.name.includes(tag) ||
-      recipe.description.includes(tag) ||
-      recipe.ingredients.some((rcp) =>
-        rcp.ingredient.toLowerCase().includes(tag.toLowerCase())
-      )
-    ) {
-      return recipe;
-    }
-  });
-  console.log(array);
-  main.innerHTML = "";
-  if (array.length > 0) {
-    displayData(array);
-  } else {
-    main.innerHTML = `<div><p class='text-danger'> Aucune recette ne correspond à votre critère… vous pouvez
-    chercher « tarte aux pommes », « poisson », etc.</div>`;
-  }
-};
-
-// recherche classique
-
-search.addEventListener("click", () => {
-  console.log(tag_search.value.length);
-  if (tag_search.value.length > 2) {
-    console.log("c'est bon");
-    array_mtd(tag_search.value);
-  } else {
-    alert("Veuillez entrer au moins 3 charactéres");
-    tag_search.value = "";
-  }
-});
