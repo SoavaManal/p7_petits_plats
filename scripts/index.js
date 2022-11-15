@@ -224,35 +224,11 @@ const searchPrincipale = (tag) => {
   }
 };
 
-// Search with method array
-// const array_mtd = (tag) => {
-//   let array = recipes.filter((recipe) => {
-//     if (
-//       recipe.name.includes(tag) ||
-//       recipe.description.includes(tag) ||
-//       recipe.ingredients.some((rcp) =>
-//         rcp.ingredient.toLowerCase().includes(tag.toLowerCase())
-//       )
-//     ) {
-//       return recipe;
-//     }
-//   });
-//   console.log(array);
-//   main.innerHTML = "";
-//   if (array.length > 0) {
-//     displayData(array);
-//   } else {
-//     main.innerHTML = `<div><p class='text-danger'> Aucune recette ne correspond à votre critère… vous pouvez
-//     chercher « tarte aux pommes », « poisson », etc.</div>`;
-//   }
-// };
-
 // recherche classique
 
 search.addEventListener("click", () => {
   if (tag_search.value.length > 2) {
     searchPrincipale(tag_search.value);
-    //array_mtd(tag_search.value);
   } else {
     alert("Veuillez entrer au moins 3 charactéres");
     tag_search.value = "";
