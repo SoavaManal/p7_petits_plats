@@ -182,3 +182,37 @@ const init = async () => {
   await displayApp(tab3);
 };
 init();
+
+const search_method = (tag) => {
+  let array = [];
+  array = recipes.filter((recipe) => {
+    if (
+      recipe.name.toLocaleLowerCase().includes(tag.toLowerCase()) ||
+      recipe.description.toLocaleLowerCase().includes(tag.toLowerCase()) ||
+      recipe.ingredients.some((rcp) =>
+        rcp.ingredient.toLowerCase().includes(tag.toLowerCase())
+      )
+    ) {
+      array.push(recipe);
+    }
+  });
+  console.log(array);
+  main.innerHTML = "";
+  if (array.length > 0) {
+    displayData(array);
+  } else {
+    main.innerHTML = `<div><p class='text-danger'> Aucune recette ne correspond à votre critère… vous pouvez
+    chercher « tarte aux pommes », « poisson », etc.</div>`;
+  }
+};
+
+const search = document.querySelector("#rechercher-une-recette");
+const tag_search = document.querySelector("#search_barre");
+search.addEventListener("click", () => {
+  if (tag_search.value.length > 2) {
+    search_method(tag_search.value);
+  } else {
+    alert("veuillez entrer au moins 3 charachtéres");
+    tag_search.value = "";
+  }
+});
