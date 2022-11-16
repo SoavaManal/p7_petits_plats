@@ -174,11 +174,11 @@ const displayApp = async (tab) => {
 const init = async () => {
   displayData(recipes);
   const tab1 = await getIngredients();
+  console.log(tab1);
   await displayIngredient(tab1);
   const tab2 = await getUstensiles();
   await displayUst(tab2);
   const tab3 = await getAppareil();
-  //console.log("tab3:" + tab3);
   await displayApp(tab3);
 };
 init();
@@ -225,17 +225,16 @@ search.addEventListener("click", () => {
 // search par 3 tag
 
 const mot_cle = document.querySelector("#tag");
+let array = [];
 // ingredients
 const select_igr = document.querySelector("#select_igr");
-select_igr.addEventListener("click", (e) => {
+// select
+select_igr.addEventListener("change", (e) => {
   let tag = e.target.value;
 
-  if (tag !== "") {
-    mot_cle.innerHTML += `<button class="btn btn-primary">
+  mot_cle.innerHTML += `<button class="btn btn-primary m-1">
     ${tag}<i class="bi bi-x-circle"></i></button>`;
-  }
 
-  let array = [];
   array = recipes.filter((recipe) =>
     recipe.ingredients.some((rcp) =>
       rcp.ingredient.toLowerCase().includes(tag.toLowerCase())
@@ -247,15 +246,13 @@ select_igr.addEventListener("click", (e) => {
 
 // ustensils
 const select_ust = document.querySelector("#select_ust");
-select_ust.addEventListener("click", (e) => {
+select_ust.addEventListener("change", (e) => {
   let tag = e.target.value;
 
-  if (tag !== "") {
-    mot_cle.innerHTML += `<button class="btn btn-danger">
+  mot_cle.innerHTML += `<button class="btn btn-danger m-1">
     ${tag}<i class="bi bi-x-circle"></i></button>`;
-  }
 
-  let array = [];
+  // let array = [];
   array = recipes.filter((recipe) =>
     recipe.ustensils.some((ust) =>
       ust.toLowerCase().includes(tag.toLowerCase())
@@ -267,14 +264,13 @@ select_ust.addEventListener("click", (e) => {
 
 // appareils
 const select_apr = document.querySelector("#select_apr");
-select_apr.addEventListener("click", (e) => {
+select_apr.addEventListener("change", (e) => {
   let tag = e.target.value;
-  if (tag !== "") {
-    mot_cle.innerHTML += `<button class="btn btn-success">
-    ${tag}<i class="bi bi-x-circle"></i></button>`;
-  }
 
-  let array = [];
+  mot_cle.innerHTML += `<button class="btn btn-success m-1">
+    ${tag}<i class="bi bi-x-circle"></i></button>`;
+
+  // let array = [];
   array = recipes.filter((recipe) =>
     recipe.appliance.toLowerCase().includes(tag.toLowerCase())
   );
