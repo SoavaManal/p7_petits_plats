@@ -1,22 +1,23 @@
 const main = document.querySelector("#main");
 
-// card recipes
+// display data
 export const displayData = (recettes) => {
   recettes.forEach((recette) => {
     const article = document.createElement("article");
     article.classList.add("col");
     article.classList.add("gy-5");
-    article.style.height = "20rem";
 
     const card_img = document.createElement("img");
     card_img.classList.add("card-img-top");
 
-    card_img.classList.add("bg-secondary");
     card_img.classList.add("py-5");
+    card_img.style.backgroundColor = "#C7BEBE";
+    card_img.style.height = "45%";
 
     const card_body = document.createElement("div");
     card_body.classList.add("card-body");
-    card_body.classList.add("bg-light");
+    card_body.style.background = "#E7E7E7";
+    card_body.style.paddingBottom = "0";
 
     // name+time
     const div_card_title = document.createElement("div");
@@ -26,13 +27,14 @@ export const displayData = (recettes) => {
 
     const name_recipe = document.createElement("h2");
     name_recipe.classList.add("col-8");
-    name_recipe.classList.add("text_size_header");
+    name_recipe.classList.add("text_header");
     name_recipe.textContent = recette.name;
 
     const time_recipe = document.createElement("span");
-    time_recipe.classList.add("col-4");
     time_recipe.classList.add("fw-bold");
-    time_recipe.classList.add("text_size");
+    time_recipe.classList.add("col-4");
+    time_recipe.classList.add("text_header");
+    time_recipe.style.fontSize = "15px";
     time_recipe.innerHTML = `<i class="bi bi-clock"></i> ${recette.time} min`;
     div_card_title.appendChild(name_recipe);
     div_card_title.appendChild(time_recipe);
@@ -55,7 +57,7 @@ export const displayData = (recettes) => {
     ingredients_list.classList.add("list-unstyled");
     recette.ingredients.forEach((igd) => {
       const ingredient_recipe = document.createElement("li");
-      ingredient_recipe.classList.add("text_size");
+      ingredient_recipe.classList.add("text_igr");
       if (igd.quantity) {
         if (igd.unit === "grammes") {
           ingredient_recipe.textContent = `${igd.ingredient}: ${igd.quantity}g`;
@@ -77,7 +79,7 @@ export const displayData = (recettes) => {
     const desc_recipe = document.createElement("p");
     desc_recipe.textContent = recette.description;
     desc_recipe.classList.add("text_ellipsis");
-    desc_recipe.classList.add("text_size");
+    desc_recipe.classList.add("text_dsc");
     div_desc.appendChild(desc_recipe);
     div_card_text.appendChild(div_list);
     div_card_text.appendChild(div_desc);
@@ -91,45 +93,117 @@ export const displayData = (recettes) => {
   });
 };
 
-// select ingrediant
+// list ingredients
+const btnIngredient = document.querySelector("#btn_igr");
+const ingredients_list = document.querySelector("#list_igr");
+const igrClose = document.querySelector(".igr_close");
 export const displayIngredient = async (tab) => {
-  const ingredient_list = document.querySelector("#select_igr");
-  ingredient_list.classList.add("text-light");
   for (let i = 0; i < tab.length; i++) {
-    const ingredients_opt = document.createElement("option");
-    for (let j = 1; j < tab[i].length; j++) {
-      ingredients_opt.textContent =
-        tab[i].substr(0, 1).toUpperCase() +
-        tab[i].substr(1, tab[i].length).toLowerCase();
-    }
-    ingredient_list.appendChild(ingredients_opt);
+    const ingredient_list = document.createElement("li");
+    ingredient_list.classList.add("bg-primary");
+    ingredient_list.classList.add("px-2");
+    ingredient_list.classList.add("py-0");
+    ingredient_list.classList.add("fs-6");
+    ingredient_list.classList.add("text-light");
+    ingredient_list.classList.add("list-group-item");
+    ingredient_list.style.border = "none";
+    ingredient_list.setAttribute(
+      "id",
+      tab[i].substr(0, 1).toUpperCase() +
+        tab[i].substr(1, tab[i].length).toLowerCase()
+    );
+    ingredient_list.setAttribute("onclick", "console.log(id)");
+    ingredient_list.textContent =
+      tab[i].substr(0, 1).toUpperCase() +
+      tab[i].substr(1, tab[i].length).toLowerCase();
+
+    ingredients_list.appendChild(ingredient_list);
   }
 };
 
-// select ustensils
+// list ustensils
+const btnUstensils = document.querySelector("#btn_ust");
+const ustensiles_list = document.querySelector("#list_ust");
+const ustClose = document.querySelector(".ust_close");
 export const displayUst = async (tab) => {
-  const ustensiles_list = document.querySelector("#select_ust");
-  ustensiles_list.classList.add("text-light");
   for (let i = 0; i < tab.length; i++) {
-    const ustensiles_opt = document.createElement("option");
+    const ustensile_list = document.createElement("li");
+    ustensile_list.classList.add("px-2");
+    ustensile_list.classList.add("py-0");
+    ustensile_list.classList.add("fs-6");
+    ustensile_list.classList.add("text-light");
+    ustensile_list.classList.add("list-group-item");
+    ustensile_list.style.border = "none";
+    ustensile_list.style.background = "#ED6454";
 
-    ustensiles_opt.textContent =
+    ustensile_list.textContent =
       tab[i].substr(0, 1).toUpperCase() +
       tab[i].substr(1, tab[i].length).toLowerCase();
-    ustensiles_list.appendChild(ustensiles_opt);
+    ustensiles_list.appendChild(ustensile_list);
   }
 };
 
-// select appliance
+// list appliances
+const btnAppliance = document.querySelector("#btn_app");
+const appareils_list = document.querySelector("#list_app");
+const appClose = document.querySelector(".app_close");
 export const displayApp = async (tab) => {
-  const appareil_list = document.querySelector("#select_apr");
-  appareil_list.classList.add("text-light");
   for (let i = 0; i < tab.length; i++) {
-    const appareil_opt = document.createElement("option");
-
-    appareil_opt.textContent =
+    const appareil_list = document.createElement("li");
+    appareil_list.classList.add("px-2");
+    appareil_list.classList.add("py-0");
+    appareil_list.classList.add("fs-6");
+    appareil_list.classList.add("text-light");
+    appareil_list.classList.add("list-group-item");
+    appareil_list.style.border = "none";
+    appareil_list.style.background = "#68D9A4";
+    appareil_list.textContent =
       tab[i].substr(0, 1).toUpperCase() +
       tab[i].substr(1, tab[i].length).toLowerCase();
-    appareil_list.appendChild(appareil_opt);
+    appareils_list.appendChild(appareil_list);
   }
 };
+const igr = document.querySelector("#igr");
+const app = document.querySelector("#app");
+const ust = document.querySelector("#ust");
+btnIngredient.addEventListener("click", () => {
+  igr.style.display = "block";
+  app.style.display = "none";
+  ust.style.display = "none";
+  btnIngredient.style.display = "none";
+  btnAppliance.style.display = "block";
+  btnUstensils.style.display = "block";
+  btnAppliance.style.marginLeft = "250px";
+  btnUstensils.style.marginLeft = "200px";
+});
+btnUstensils.addEventListener("click", () => {
+  igr.style.display = "none";
+  app.style.display = "none";
+  ust.style.display = "block";
+  btnIngredient.style.display = "block";
+  btnAppliance.style.display = "block";
+  btnUstensils.style.display = "none";
+});
+btnAppliance.addEventListener("click", () => {
+  igr.style.display = "none";
+  app.style.display = "block";
+  ust.style.display = "none";
+  btnIngredient.style.display = "block";
+  btnAppliance.style.display = "none";
+  btnUstensils.style.display = "block";
+});
+
+igrClose.addEventListener("click", () => {
+  igr.style.display = "none";
+  btnIngredient.style.display = "block";
+  btnAppliance.style.marginLeft = "0px";
+  btnUstensils.style.marginLeft = "0px";
+});
+ustClose.addEventListener("click", () => {
+  ust.style.display = "none";
+  btnUstensils.style.display = "block";
+});
+appClose.addEventListener("click", () => {
+  app.style.display = "none";
+  btnAppliance.style.display = "block";
+});

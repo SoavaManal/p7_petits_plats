@@ -23,52 +23,63 @@
                   </div>
                   <div id="tag"></div>
                   <div class="row">
-                    
-                    <div class="col">
-                      <div class="row g-0">
-                      <div class="col">
-                        <input class="btn btn-primary position-relative" type="text" value="Ingrédients" type="button" id="menu1" aria-expanded="false">
-                      </div>
-                      <div class="col">
-                         <select class="form-select bg-primary position-absolute" style="width: 5%; border-width: 0; right:74%" id="select_igr" aria-label=".form-select example">
-                             <option selected disabled value=""></option>
-                          </select>
-                      </div>
-                    </div>
-                  </div>
-                    <div class="col">
-                      <div class="row">
-                        <div class="row">
-                          <div class="col">
+                      <div class="col-3">
+                        <div id="btn_igr" class="bg-primary" style="position: relative;width: 170px; height: 68px; border-radius: .25rem; padding: 20px; padding-left: 30px; color:white">
+                          Ingrédients
+                          <span class="col">
+                            <i class="bi bi-chevron-down"></i>
+                          </span>
+                        </div>
+                        <div id="igr" class="bg-primary" style="display:none;width: 45%; border-radius: 0.25rem; position:absolute; top:238px">
+                          <div style="color:white; padding:5px; height: 40px;">
+                            <input id="input_igr" class="col w-5 bg-primary text-light" style="border:none;width: 92%;" type="text" placeholder="Rechercher un ingrédient">
+                            <span class="igr_close"><i class="bi bi-chevron-up"></i></span>
+                          </div>
+                          <div style="column-count:3">
 
-                            <input class="btn btn-success position-relative" type="text" value="Appareils" id="menu2" aria-expanded="false">
+                            <ul id="list_igr" class=" list-group bg-primary" >
+                            </ul>
                           </div>
                         </div>
-                        <div class="col">
-                          <select class="form-select bg-success position-absolute" style="width: 5%; border-width: 0; right:45%" id="select_apr" aria-label=".form-select example">
-                            <option selected disabled value=""></option>
-                         </select>
+                  </div>
+                        <div class="col-3">
+                          <div id="btn_app" class="row" style="position:absolute;background:#68D9A4;width: 170px; height: 68px; border-radius: .25rem; padding: 20px; padding-left: 30px; color:white">
+                            Appareils
+                            <span class="col">
+                              <i class="bi bi-chevron-down"></i>
+                            </span>
+                          </div>
+                          <div id="app" style="display:none;border-radius:0.25rem;background:#68D9A4;position:absolute;top:238px">
+                            <div style="color:white;padding:5px;height: 40px;">
+                              <input id="input_app" class="col w-5 text-light" style="border:none;width: 90%;background:#68D9A4;" type="text" placeholder="Rechercher une appareils">
+                              <span class="app_close"><i class="bi bi-chevron-up"></i></span>
+                            </div>
+                            <div style="column-count:1">
+                              <ul id="list_app" class="list-group" style="background: #68D9A4"></ul>
+                          </div>
+                          </div>
                         </div>
-
+                        <div class="col-3">
+                          <div id="btn_ust" class="row h-2 w-2" style="position:relative;background:#ED6454;width: 170px; height: 68px; border-radius: .25rem; padding: 20px; padding-left: 30px; color:white">
+                            Ustensiles
+                            <span class="col">
+                              <i class="bi bi-chevron-down"></i>
+                            </span>
+                          </div>
+                          <div id="ust" style="display:none;border-radius:0.25rem;background:#ED6454;position: absolute;top:238px;">
+                            <div style="color:white;padding:5px; height: 40px;">
+                              <input id="input_ust" class="col w-5  text-light" style="background:#ED6454;border:none;width: 90%;" type="text" placeholder="Rechercher un ustensiles">
+                              <span class="ust_close"><i class="bi bi-chevron-up"></i></span>
+                            </div>
+                            <div style="column-count:2">
+                              <ul id="list_ust" class="list-group" style="background:#ED6454">
+                              </ul>
+                            </div>
+                          </div>
+                          </div>
                       </div>
-                    </div>
-                    <div class="col">
-                      <div class="row">
-                        <div class="col">
-                          <input class="btn btn-danger position-relative" type="text" value="Ustensiles" id="menu3" aria-expanded="false">
-
-                        </div>
-                        <div class="col">
-                          <select class="form-select bg-danger position-absolute" style="width: 5%; border-width: 0; right:17%" id="select_ust" aria-label=".form-select example">
-                            <option selected disabled value=""></option>
-                         </select>
-                        </div>
-                      </div>
-                      </div>
-                    </div>
-              
             </header>
-            <main>
+            <main style="z-index:0">
                 <div class="row row-cols-1 row-cols-lg-3 row-cols-md-2 " id="main"></div>
             </main>
         </div>
