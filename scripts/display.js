@@ -112,7 +112,6 @@ export const displayIngredient = async (tab) => {
       tab[i].substr(0, 1).toUpperCase() +
         tab[i].substr(1, tab[i].length).toLowerCase()
     );
-    ingredient_list.setAttribute("onclick", "console.log(id)");
     ingredient_list.textContent =
       tab[i].substr(0, 1).toUpperCase() +
       tab[i].substr(1, tab[i].length).toLowerCase();
@@ -135,6 +134,11 @@ export const displayUst = async (tab) => {
     ustensile_list.classList.add("list-group-item");
     ustensile_list.style.border = "none";
     ustensile_list.style.background = "#ED6454";
+    ustensile_list.setAttribute(
+      "id",
+      tab[i].substr(0, 1).toUpperCase() +
+        tab[i].substr(1, tab[i].length).toLowerCase()
+    );
 
     ustensile_list.textContent =
       tab[i].substr(0, 1).toUpperCase() +
@@ -157,6 +161,11 @@ export const displayApp = async (tab) => {
     appareil_list.classList.add("list-group-item");
     appareil_list.style.border = "none";
     appareil_list.style.background = "#68D9A4";
+    appareil_list.setAttribute(
+      "id",
+      tab[i].substr(0, 1).toUpperCase() +
+        tab[i].substr(1, tab[i].length).toLowerCase()
+    );
     appareil_list.textContent =
       tab[i].substr(0, 1).toUpperCase() +
       tab[i].substr(1, tab[i].length).toLowerCase();
