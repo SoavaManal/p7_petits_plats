@@ -1,3 +1,4 @@
+
 .text_ellipsis{
     overflow: hidden;
     text-overflow: ellipsis;
@@ -5,9 +6,36 @@
     -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
 }
-.text_size_header{
-    font-size: 1rem;
+.text_header{
+    /* font-family: Lato; */
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 22px;
 }
-.text_size{
-    font-size: 0.8rem;
+.text_igr{
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 700;
+}
+.text_dsc{
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 400;
+}
+/* #list_igr{
+    width: 200%;
+   
+} */
+.display{
+    display:block;
+}
+/* .toggle_class{
+    display:bock;
+} */
+#btn_igr{
+    width: 150px;
+    height: 50px;
+}
+.col_count{
+    column-count: 3;
 }
