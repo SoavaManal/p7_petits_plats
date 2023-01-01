@@ -192,6 +192,8 @@ btnUstensils.addEventListener("click", () => {
   btnIngredient.style.display = "block";
   btnAppliance.style.display = "block";
   btnUstensils.style.display = "none";
+  btnAppliance.style.marginLeft = "0px";
+  btnUstensils.style.marginLeft = "0px";
 });
 btnAppliance.addEventListener("click", () => {
   igr.style.display = "none";
@@ -200,6 +202,8 @@ btnAppliance.addEventListener("click", () => {
   btnIngredient.style.display = "block";
   btnAppliance.style.display = "none";
   btnUstensils.style.display = "block";
+  btnAppliance.style.marginLeft = "0px";
+  btnUstensils.style.marginLeft = "0px";
 });
 
 igrClose.addEventListener("click", () => {
