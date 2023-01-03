@@ -66,22 +66,31 @@ const init = async (recipes) => {
   let tab3 = await getAppareil(recipes);
   // Retirer le tag de la liste des recherche avancée
   if (tag.length > 0) {
-    let tagIndex = tab1.indexOf(tag[tag.length - 1].toUpperCase());
-    tab1.splice(tagIndex, 1);
+    for (let t of tag) {
+      let tagIndex = tab1.indexOf(t.toUpperCase());
+      tab1.splice(tagIndex, 1);
+    }
   }
   if (tag.length > 0) {
-    let tagIndex = tab2.indexOf(tag[tag.length - 1].toUpperCase());
-    tab2.splice(tagIndex, 1);
+    for (let t of tag) {
+      let tagIndex = tab2.indexOf(t.toUpperCase());
+      tab2.splice(tagIndex, 1);
+    }
   }
   if (tag.length > 0) {
-    let tagIndex = tab3.indexOf(tag[tag.length - 1].toUpperCase());
-    tab3.splice(tagIndex, 1);
+    for (let t of tag) {
+      let tagIndex = tab3.indexOf(t.toUpperCase());
+      tab3.splice(tagIndex, 1);
+    }
   }
   if (newArrayRecipe.length == 1) {
     tab1 = [];
     tab2 = [];
     tab3 = [];
   }
+  ul_igr.innerHTML = "";
+  ul_app.innerHTML = "";
+  ul_ust.innerHTML = "";
   await displayIngredient(tab1);
   await displayUst(tab2);
   await displayApp(tab3);
@@ -105,7 +114,9 @@ const searchPrincipale = async (tag) => {
           recipes_try.push(recipe);
         }
       }
-      if (recipe.description.toLocaleLowerCase().includes(tag.toLowerCase())) {
+      if (
+        recipe.description.toLocaleLowerCase().includes(tag.toLowerCase() + " ")
+      ) {
         if (!recipes_try.includes(recipe)) {
           recipes_try.push(recipe);
         }
@@ -141,6 +152,7 @@ search.addEventListener("click", () => {
 // lancer la recherche pour chaque nouveau caractéres
 tag_search.addEventListener("input", () => {
   searchPrincipale(tag_search.value);
+  newArrayRecipe = searchPrincipale(tag_search.value);
 });
 
 //input ingredient
@@ -238,7 +250,11 @@ ul_igr.addEventListener("click", async (e) => {
   if (newArrayRecipe.length == 0) {
     for (let recipe of recipes) {
       for (let igr of recipe.ingredients) {
-        if (igr.ingredient.includes(tag)) {
+        if (
+          igr.ingredient
+            .toLowerCase()
+            .includes(tag[tag.length - 1].toLowerCase())
+        ) {
           newArrayRecipe.push(recipe);
         }
       }
@@ -250,7 +266,9 @@ ul_igr.addEventListener("click", async (e) => {
     for (let recipe of newArrayRecipe) {
       for (let igr of recipe.ingredients) {
         if (
-          igr.ingredient.includes(tag[tag.length - 1]) &&
+          igr.ingredient
+            .toLowerCase()
+            .includes(tag[tag.length - 1].toLowerCase()) &&
           !array.includes(recipe)
         ) {
           array.push(recipe);
@@ -280,13 +298,11 @@ ul_ust.addEventListener("click", (e) => {
   keyword.innerHTML += `<div class="btn m-1" style="background:#ED6454;color:white">
        ${e.target.id}<span class="close"><i class="bi bi-x-circle"></i><span></div>`;
 
-  console.log("longueur tag", tag.length);
-  console.log("longueur array", newArrayRecipe.length);
   if (newArrayRecipe.length == 0) {
     console.log("1");
     for (let recipe of recipes) {
       for (let ust of recipe.ustensils) {
-        if (ust.includes(tag[tag.length - 1].toLowerCase())) {
+        if (ust.toLowerCase().includes(tag[tag.length - 1].toLowerCase())) {
           newArrayRecipe.push(recipe);
         }
       }
@@ -299,7 +315,7 @@ ul_ust.addEventListener("click", (e) => {
     for (let recipe of newArrayRecipe) {
       for (let ust of recipe.ustensils) {
         if (
-          ust.includes(tag[tag.length - 1].toLowerCase()) &&
+          ust.toLowerCase().includes(tag[tag.length - 1].toLowerCase()) &&
           !array.includes(recipe)
         ) {
           array.push(recipe);
@@ -330,7 +346,11 @@ ul_app.addEventListener("click", (e) => {
        ${e.target.id}<span class="close"><i class="bi bi-x-circle"></i><span></div>`;
   if (newArrayRecipe.length == 0) {
     for (let recipe of recipes) {
-      if (recipe.appliance.includes(tag[tag.length - 1])) {
+      if (
+        recipe.appliance
+          .toLowerCase()
+          .includes(tag[tag.length - 1].toLowerCase())
+      ) {
         newArrayRecipe.push(recipe);
       }
     }
@@ -340,7 +360,9 @@ ul_app.addEventListener("click", (e) => {
     let array = [];
     for (let recipe of newArrayRecipe) {
       if (
-        recipe.appliance.includes(tag[tag.length - 1]) &&
+        recipe.appliance
+          .toLowerCase()
+          .includes(tag[tag.length - 1].toLowerCase()) &&
         !array.includes(recipe)
       ) {
         array.push(recipe);
