@@ -15,13 +15,16 @@ const getIngredients = async (recipes) => {
   let tab = [];
   recipes.forEach((recipe) => {
     recipe.ingredients.forEach((igd) => {
-      if (!tab.includes(igd.ingredient.toUpperCase())) {
+      if (
+        !tab.includes(igd.ingredient.toUpperCase()) &&
+        !tab.includes(
+          igd.ingredient.toUpperCase().substring(0, igd.ingredient.length - 1)
+        )
+      ) {
         tab.push(igd.ingredient.toUpperCase());
       }
     });
   });
-
-  console.log(tab);
   return tab;
 };
 
@@ -47,24 +50,54 @@ const getAppareil = async (recipes) => {
   return tab;
 };
 
-const init = async (recipe) => {
-  displayData(recipe);
-  const tab1 = await getIngredients(recipe);
+const init = async (recipes) => {
+  // affichage des recettes
+  displayData(recipes);
+  let tab1 = await getIngredients(recipes);
+  let tab2 = await getUstensiles(recipes);
+  let tab3 = await getAppareil(recipes);
+  // Retirer le tag de la liste des recherche avancée
+  if (tag.length > 0) {
+    for (let t of tag) {
+      let tagIndex = tab1.indexOf(t.toUpperCase());
+      tab1.splice(tagIndex, 1);
+    }
+  }
+  if (tag.length > 0) {
+    for (let t of tag) {
+      let tagIndex = tab2.indexOf(t.toUpperCase());
+      tab2.splice(tagIndex, 1);
+    }
+  }
+  if (tag.length > 0) {
+    for (let t of tag) {
+      let tagIndex = tab3.indexOf(t.toUpperCase());
+      tab3.splice(tagIndex, 1);
+    }
+  }
+  if (newArrayRecipe.length == 1) {
+    tab1 = [];
+    tab2 = [];
+    tab3 = [];
+  }
+  ul_igr.innerHTML = "";
+  ul_app.innerHTML = "";
+  ul_ust.innerHTML = "";
   await displayIngredient(tab1);
-  const tab2 = await getUstensiles(recipe);
   await displayUst(tab2);
-  const tab3 = await getAppareil(recipe);
   await displayApp(tab3);
 };
 init(recipes);
 
 const search_method = (tag) => {
   let recipes_try = [];
-  if (tag.length > 0) {
+  if (tag.length > 2) {
     recipes.filter((recipe) => {
       if (
         recipe.name.toLocaleLowerCase().includes(tag.toLowerCase()) ||
-        recipe.description.toLocaleLowerCase().includes(tag.toLowerCase()) ||
+        recipe.description
+          .toLocaleLowerCase()
+          .includes(tag.toLowerCase() + " ") ||
         recipe.ingredients.some((rcp) =>
           rcp.ingredient.toLowerCase().includes(tag.toLowerCase())
         )
@@ -72,7 +105,7 @@ const search_method = (tag) => {
         recipes_try.push(recipe);
       }
     });
-  } else if (tag.length == 0) {
+  } else if (tag.length <= 2) {
     recipes_try = recipes;
   }
   main.innerHTML = "";
@@ -94,6 +127,7 @@ const tag_search = document.querySelector("#search_barre");
 // actualisation à chaque nouveau caractére
 tag_search.addEventListener("input", () => {
   search_method(tag_search.value);
+  newArrayRecipe = search_method(tag_search.value);
 });
 search.addEventListener("click", () => {
   if (tag_search.value.length > 2) {
@@ -108,7 +142,12 @@ search.addEventListener("click", () => {
 //input ingredient
 const inputIgr = document.querySelector("#input_igr");
 inputIgr.addEventListener("input", async (e) => {
-  const tab1 = await getIngredients(recipes);
+  let tab1 = [];
+  if (newArrayRecipe.length == 0) {
+    tab1 = await getIngredients(recipes);
+  } else {
+    tab1 = await getIngredients(newArrayRecipe);
+  }
   let tab2 = [];
   if (e.target.value.length > 0) {
     tab1.filter((tab) => {
@@ -126,7 +165,12 @@ inputIgr.addEventListener("input", async (e) => {
 //input appliance
 const inputApp = document.querySelector("#input_app");
 inputApp.addEventListener("input", async (e) => {
-  const tab1 = await getAppareil(recipes);
+  let tab1 = [];
+  if (newArrayRecipe.length == 0) {
+    tab1 = await getAppareil(recipes);
+  } else {
+    tab1 = await getAppareil(newArrayRecipe);
+  }
   let tab2 = [];
   if (e.target.value.length > 0) {
     tab1.filter((tab) => {
@@ -144,7 +188,12 @@ inputApp.addEventListener("input", async (e) => {
 //input ustensils
 const inputust = document.querySelector("#input_ust");
 inputust.addEventListener("input", async (e) => {
-  const tab1 = await getUstensiles(recipes);
+  let tab1 = [];
+  if (newArrayRecipe.length == 0) {
+    tab1 = await getUstensiles(recipes);
+  } else {
+    tab1 = await getUstensiles(newArrayRecipe);
+  }
   let tab2 = [];
   if (e.target.value.length > 0) {
     tab1.filter((tab) => {
@@ -152,9 +201,6 @@ inputust.addEventListener("input", async (e) => {
         tab2.push(tab);
       }
     });
-    // tab2 = tab1.filter((tab) => {
-    //   tab.includes(e.target.value.toUpperCase());
-    // });
     console.log(tab1);
   } else {
     tab2 = tab1;
@@ -167,10 +213,17 @@ inputust.addEventListener("input", async (e) => {
 let tag = [];
 let arrayRecipe = [];
 let newArrayRecipe = [];
-let array = [];
 let keyword = document.querySelector("#tag");
 // Recherche avancée par ingrédients
 ul_igr.addEventListener("click", (e) => {
+  const listIng = document.querySelector("#igr");
+  const btnIng = document.querySelector("#btn_igr");
+  const btnAppliance = document.querySelector("#btn_app");
+  const btnUstensils = document.querySelector("#btn_ust");
+  btnAppliance.style.marginLeft = "0px";
+  btnUstensils.style.marginLeft = "0px";
+  listIng.style.display = "none";
+  btnIng.style.display = "block";
   console.log(e.target.id);
   tag.push(e.target.id);
   keyword.innerHTML += `<div class="btn btn-primary m-1">
@@ -182,9 +235,10 @@ ul_igr.addEventListener("click", (e) => {
         rcp.ingredient.toLowerCase().includes(tag[tag.length - 1].toLowerCase())
       )
     );
-    console.log(newArrayRecipe);
     arrayRecipe = newArrayRecipe;
-  } else {
+    console.log(newArrayRecipe);
+  } else if (newArrayRecipe.length > 0) {
+    let array = [];
     array = newArrayRecipe.filter((recipe) =>
       recipe.ingredients.some((rcp) =>
         rcp.ingredient.toLowerCase().includes(tag[tag.length - 1].toLowerCase())
@@ -203,6 +257,10 @@ ul_igr.addEventListener("click", (e) => {
 });
 // Recherche avancée par ustensils
 ul_ust.addEventListener("click", (e) => {
+  const listUst = document.querySelector("#ust");
+  const btnUst = document.querySelector("#btn_ust");
+  listUst.style.display = "none";
+  btnUst.style.display = "block";
   console.log(e.target.id);
   tag.push(e.target.id);
   keyword.innerHTML += `<div class="btn m-1" style="background:#ED6454;color:white">
@@ -216,7 +274,8 @@ ul_ust.addEventListener("click", (e) => {
     );
     console.log(newArrayRecipe);
     arrayRecipe = newArrayRecipe;
-  } else {
+  } else if (newArrayRecipe.length > 0) {
+    let array = [];
     array = newArrayRecipe.filter((recipe) =>
       recipe.ustensils.some((ust) =>
         ust.toLowerCase().includes(tag[tag.length - 1].toLowerCase())
@@ -235,6 +294,10 @@ ul_ust.addEventListener("click", (e) => {
 
 // Recherche avancée par appliance
 ul_app.addEventListener("click", (e) => {
+  const listApp = document.querySelector("#app");
+  const btnApp = document.querySelector("#btn_app");
+  listApp.style.display = "none";
+  btnApp.style.display = "block";
   console.log(e.target.id);
   tag.push(e.target.id);
   keyword.innerHTML += `<div class="btn m-1" style="background:#68D9A4;color:white">
@@ -244,9 +307,9 @@ ul_app.addEventListener("click", (e) => {
       recipe.appliance.toLowerCase().includes(tag[tag.length - 1].toLowerCase())
     );
     console.log(newArrayRecipe);
-    // arrayRecipe = newArrayRecipe;
-  } else {
-    array = recipes.filter((recipe) =>
+  } else if (newArrayRecipe.length > 0) {
+    let array = [];
+    array = newArrayRecipe.filter((recipe) =>
       recipe.appliance.toLowerCase().includes(tag[tag.length - 1].toLowerCase())
     );
     newArrayRecipe = array;
@@ -268,6 +331,7 @@ keyword.addEventListener("click", (e) => {
     e.target.parentElement.parentElement.remove();
     if (tag.length == 0) {
       init(recipes);
+      newArrayRecipe = [];
     }
   }
 });
