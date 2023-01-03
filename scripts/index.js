@@ -126,12 +126,16 @@ const search = document.querySelector("#rechercher-une-recette");
 const tag_search = document.querySelector("#search_barre");
 // actualisation à chaque nouveau caractére
 tag_search.addEventListener("input", () => {
+  // console.time();
   search_method(tag_search.value);
+  // console.timeEnd();
   newArrayRecipe = search_method(tag_search.value);
 });
 search.addEventListener("click", () => {
   if (tag_search.value.length > 2) {
+    console.time();
     search_method(tag_search.value);
+    console.timeEnd();
   } else {
     alert("veuillez entrer au moins 3 charachtéres");
     tag_search.value = "";
@@ -328,10 +332,11 @@ keyword.addEventListener("click", (e) => {
   if (e.target.classList.contains("bi")) {
     let indexTag = tag.indexOf(e.target.innerText);
     tag.splice(indexTag, 1);
+    init(recipes);
     e.target.parentElement.parentElement.remove();
     if (tag.length == 0) {
-      init(recipes);
       newArrayRecipe = [];
+      // init(recipes);
     }
   }
 });
