@@ -53,7 +53,6 @@ const getAppareil = async (recipes) => {
       tab.push(recipe.appliance.toUpperCase());
     }
   }
-
   return tab;
 };
 
@@ -67,22 +66,21 @@ const init = async (recipes) => {
   // Retirer le tag de la liste des recherche avancée
   if (tag.length > 0) {
     for (let t of tag) {
-      let tagIndex = tab1.indexOf(t.toUpperCase());
-      tab1.splice(tagIndex, 1);
+      if (tab1.includes(t.toUpperCase())) {
+        let tagIndex = tab1.indexOf(t.toUpperCase());
+        tab1.splice(tagIndex, 1);
+      }
+      if (tab2.includes(t.toUpperCase())) {
+        let tagIndex = tab2.indexOf(t.toUpperCase());
+        tab2.splice(tagIndex, 1);
+      }
+      if (tab3.includes(t.toUpperCase())) {
+        let tagIndex = tab3.indexOf(t.toUpperCase());
+        tab3.splice(tagIndex, 1);
+      }
     }
   }
-  if (tag.length > 0) {
-    for (let t of tag) {
-      let tagIndex = tab2.indexOf(t.toUpperCase());
-      tab2.splice(tagIndex, 1);
-    }
-  }
-  if (tag.length > 0) {
-    for (let t of tag) {
-      let tagIndex = tab3.indexOf(t.toUpperCase());
-      tab3.splice(tagIndex, 1);
-    }
-  }
+
   if (newArrayRecipe.length == 1) {
     tab1 = [];
     tab2 = [];
@@ -100,8 +98,14 @@ init(recipes);
 // Recherch principal avec "for"
 const searchPrincipale = async (tag) => {
   let recipes_try = [];
+  let array = [];
   if (tag.length > 0) {
-    for (let recipe of recipes) {
+    if (newArrayRecipe.length == 0) {
+      array = recipes;
+    } else if (newArrayRecipe.length > 0) {
+      array = newArrayRecipe;
+    }
+    for (let recipe of array) {
       for (let igr of recipe.ingredients) {
         if (igr.ingredient.toLocaleLowerCase().includes(tag.toLowerCase())) {
           if (!recipes_try.includes(recipe)) {
@@ -122,7 +126,7 @@ const searchPrincipale = async (tag) => {
         }
       }
     }
-  } else if (tag.length == 0) {
+  } else if (tag.length <= 0) {
     recipes_try = recipes;
   }
   main.innerHTML = "";
@@ -150,9 +154,9 @@ search.addEventListener("click", () => {
   }
 });
 // lancer la recherche pour chaque nouveau caractéres
-tag_search.addEventListener("input", () => {
+tag_search.addEventListener("input", async () => {
   searchPrincipale(tag_search.value);
-  newArrayRecipe = searchPrincipale(tag_search.value);
+  newArrayRecipe = await searchPrincipale(tag_search.value);
 });
 
 //input ingredient
@@ -226,24 +230,24 @@ inputust.addEventListener("input", async (e) => {
 
 let arrayRecipe = [];
 let newArrayRecipe = [];
-// let array = [];
 let keyword = document.querySelector("#tag");
+
+const listIng = document.querySelector("#igr");
+const listUst = document.querySelector("#ust");
+const listApp = document.querySelector("#app");
+const btnIng = document.querySelector("#btn_igr");
+const btnApp = document.querySelector("#btn_app");
+const btnUst = document.querySelector("#btn_ust");
 
 // Recherche avancé par ingrédients
 ul_igr.addEventListener("click", async (e) => {
-  const listIng = document.querySelector("#igr");
-  const btnIng = document.querySelector("#btn_igr");
-  const btnAppliance = document.querySelector("#btn_app");
-  const btnUstensils = document.querySelector("#btn_ust");
-  btnAppliance.style.marginLeft = "0px";
-  btnUstensils.style.marginLeft = "0px";
+  btnApp.style.marginLeft = "0px";
+  btnUst.style.marginLeft = "0px";
   listIng.style.display = "none";
   btnIng.style.display = "block";
   console.log(document.getElementById(e.target.id));
   tag.push(e.target.id);
-  // document
-  //   .getElementById(e.target.id)
-  //   .style.setProperty("display", "none", "important");
+
   keyword.innerHTML += `<div class="btn btn-primary m-1">
        ${e.target.id}<span class="close"><i class="bi bi-x-circle"></i><span></div>`;
 
@@ -261,7 +265,6 @@ ul_igr.addEventListener("click", async (e) => {
     }
     console.log(newArrayRecipe);
   } else if (newArrayRecipe.length > 0) {
-    console.log(newArrayRecipe);
     let array = [];
     for (let recipe of newArrayRecipe) {
       for (let igr of recipe.ingredients) {
@@ -289,8 +292,6 @@ ul_igr.addEventListener("click", async (e) => {
 
 // Recherche avancée par ustensils
 ul_ust.addEventListener("click", (e) => {
-  const listUst = document.querySelector("#ust");
-  const btnUst = document.querySelector("#btn_ust");
   listUst.style.display = "none";
   btnUst.style.display = "block";
   console.log(e.target.id);
@@ -336,8 +337,6 @@ ul_ust.addEventListener("click", (e) => {
 
 // Recherche avancée par appliance
 ul_app.addEventListener("click", (e) => {
-  const listApp = document.querySelector("#app");
-  const btnApp = document.querySelector("#btn_app");
   listApp.style.display = "none";
   btnApp.style.display = "block";
   console.log(e.target.id);
