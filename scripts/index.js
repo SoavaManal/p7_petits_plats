@@ -11,6 +11,7 @@ const ul_igr = document.querySelector("#list_igr");
 const ul_ust = document.querySelector("#list_ust");
 const ul_app = document.querySelector("#list_app");
 
+// ---- Recupération des ingredients ----
 const getIngredients = async (recipes) => {
   let tab = [];
   recipes.forEach((recipe) => {
@@ -28,6 +29,7 @@ const getIngredients = async (recipes) => {
   return tab;
 };
 
+// ---- Récupération des ustensils ----
 const getUstensiles = async (recipes) => {
   let tab = [];
   recipes.forEach((recipe) => {
@@ -40,6 +42,7 @@ const getUstensiles = async (recipes) => {
   return tab;
 };
 
+// ---- Récupération des appareil ----
 const getAppareil = async (recipes) => {
   let tab = [];
   recipes.forEach((recipe) => {
@@ -50,36 +53,36 @@ const getAppareil = async (recipes) => {
   return tab;
 };
 
+// ---- Appel les fonctions d'affichage ----
 const init = async (recipes) => {
-  // affichage des recettes
   displayData(recipes);
   let tab1 = await getIngredients(recipes);
   let tab2 = await getUstensiles(recipes);
   let tab3 = await getAppareil(recipes);
-  // Retirer le tag de la liste des recherche avancée
+  // Retirer le tag de la liste des recherches avancées
   if (tag.length > 0) {
     for (let t of tag) {
-      let tagIndex = tab1.indexOf(t.toUpperCase());
-      tab1.splice(tagIndex, 1);
+      if (tab1.includes(t.toUpperCase())) {
+        let tagIndex = tab1.indexOf(t.toUpperCase());
+        tab1.splice(tagIndex, 1);
+      }
+      if (tab2.includes(t.toUpperCase())) {
+        let tagIndex = tab1.indexOf(t.toUpperCase());
+        tab2.splice(tagIndex, 1);
+      }
+      if (tab3.includes(t.toUpperCase())) {
+        let tagIndex = tab1.indexOf(t.toUpperCase());
+        tab3.splice(tagIndex, 1);
+      }
     }
   }
-  if (tag.length > 0) {
-    for (let t of tag) {
-      let tagIndex = tab2.indexOf(t.toUpperCase());
-      tab2.splice(tagIndex, 1);
-    }
-  }
-  if (tag.length > 0) {
-    for (let t of tag) {
-      let tagIndex = tab3.indexOf(t.toUpperCase());
-      tab3.splice(tagIndex, 1);
-    }
-  }
+  // Si le resultat n'affiche qu'une seul recette => fin de recherche
   if (newArrayRecipe.length == 1) {
     tab1 = [];
     tab2 = [];
     tab3 = [];
   }
+  // actualisé les liste des recherches avancé en fonction des resultats affichés
   ul_igr.innerHTML = "";
   ul_app.innerHTML = "";
   ul_ust.innerHTML = "";
@@ -89,23 +92,25 @@ const init = async (recipes) => {
 };
 init(recipes);
 
-const search_method = (tag) => {
+// ---- Recheche Principale ----
+const search_method = async (tag) => {
   let recipes_try = [];
-  if (tag.length > 2) {
-    recipes.filter((recipe) => {
-      if (
-        recipe.name.toLocaleLowerCase().includes(tag.toLowerCase()) ||
-        recipe.description
-          .toLocaleLowerCase()
-          .includes(tag.toLowerCase() + " ") ||
+  let array = [];
+  if (tag.length > 0) {
+    if (newArrayRecipe.length == 0) {
+      array = recipes;
+    } else if (newArrayRecipe.length > 0) {
+      array = newArrayRecipe;
+    }
+    recipes_try = array.filter(
+      (recipe) =>
+        recipe.name.toLowerCase().includes(tag.toLowerCase()) ||
+        recipe.description.toLowerCase().includes(tag.toLowerCase()) ||
         recipe.ingredients.some((rcp) =>
           rcp.ingredient.toLowerCase().includes(tag.toLowerCase())
         )
-      ) {
-        recipes_try.push(recipe);
-      }
-    });
-  } else if (tag.length <= 2) {
+    );
+  } else if (tag.length == 0) {
     recipes_try = recipes;
   }
   main.innerHTML = "";
@@ -118,32 +123,19 @@ const search_method = (tag) => {
     main.innerHTML = `<div><p class='text-danger'> Aucune recette ne correspond à votre critère… vous pouvez
     chercher « tarte aux pommes », « poisson », etc.</div>`;
   }
+
   return recipes_try;
 };
 
-// lancer la recherche principale
-const search = document.querySelector("#rechercher-une-recette");
+// ---- au input: Lancer la recherche principale ----
 const tag_search = document.querySelector("#search_barre");
-// actualisation à chaque nouveau caractére
-tag_search.addEventListener("input", () => {
-  // console.time();
+tag_search.addEventListener("input", async () => {
   search_method(tag_search.value);
-  // console.timeEnd();
-  newArrayRecipe = search_method(tag_search.value);
-});
-search.addEventListener("click", () => {
-  if (tag_search.value.length > 2) {
-    console.time();
-    search_method(tag_search.value);
-    console.timeEnd();
-  } else {
-    alert("veuillez entrer au moins 3 charachtéres");
-    tag_search.value = "";
-  }
+  newArrayRecipe = await search_method(tag_search.value);
 });
 
-// input recherche avancée
-//input ingredient
+// ---- les recherches avancées: utilisation d'input ----
+// filtrer les ingrédient au input
 const inputIgr = document.querySelector("#input_igr");
 inputIgr.addEventListener("input", async (e) => {
   let tab1 = [];
@@ -154,11 +146,7 @@ inputIgr.addEventListener("input", async (e) => {
   }
   let tab2 = [];
   if (e.target.value.length > 0) {
-    tab1.filter((tab) => {
-      if (tab.includes(e.target.value.toUpperCase()) && !tab2.includes(tab)) {
-        tab2.push(tab);
-      }
-    });
+    tab2 = tab1.filter((tab) => tab.includes(e.target.value.toUpperCase()));
   } else {
     tab2 = tab1;
   }
@@ -166,7 +154,7 @@ inputIgr.addEventListener("input", async (e) => {
   displayIngredient(tab2);
 });
 
-//input appliance
+// filtrer les apareils au input
 const inputApp = document.querySelector("#input_app");
 inputApp.addEventListener("input", async (e) => {
   let tab1 = [];
@@ -177,11 +165,7 @@ inputApp.addEventListener("input", async (e) => {
   }
   let tab2 = [];
   if (e.target.value.length > 0) {
-    tab1.filter((tab) => {
-      if (tab.includes(e.target.value.toUpperCase()) && !tab2.includes(tab)) {
-        tab2.push(tab);
-      }
-    });
+    tab2 = tab1.filter((tab) => tab.includes(e.target.value.toUpperCase()));
   } else {
     tab2 = tab1;
   }
@@ -189,7 +173,7 @@ inputApp.addEventListener("input", async (e) => {
   displayApp(tab2);
 });
 
-//input ustensils
+// filtrer les ustensils par input
 const inputust = document.querySelector("#input_ust");
 inputust.addEventListener("input", async (e) => {
   let tab1 = [];
@@ -200,12 +184,7 @@ inputust.addEventListener("input", async (e) => {
   }
   let tab2 = [];
   if (e.target.value.length > 0) {
-    tab1.filter((tab) => {
-      if (tab.includes(e.target.value.toUpperCase()) && !tab2.includes(tab)) {
-        tab2.push(tab);
-      }
-    });
-    console.log(tab1);
+    tab2 = tab1.filter((tab) => tab.includes(e.target.value.toUpperCase()));
   } else {
     tab2 = tab1;
   }
@@ -213,26 +192,36 @@ inputust.addEventListener("input", async (e) => {
   displayUst(tab2);
 });
 
-// Recherche avancée
+// ---- les recherches avancées: au click ----
+// varriables
+const listIng = document.querySelector("#igr");
+const listApp = document.querySelector("#app");
+const listUst = document.querySelector("#ust");
+const btnIng = document.querySelector("#btn_igr");
+const btnAppliance = document.querySelector("#btn_app");
+const btnUstensils = document.querySelector("#btn_ust");
+const keyword = document.querySelector("#tag");
+const keyWordDiv = document.createElement("div");
+keyword.appendChild(keyWordDiv);
 let tag = [];
 let arrayRecipe = [];
 let newArrayRecipe = [];
-let keyword = document.querySelector("#tag");
-// Recherche avancée par ingrédients
+
+// Filtrer les ingrédient au click
 ul_igr.addEventListener("click", (e) => {
-  const listIng = document.querySelector("#igr");
-  const btnIng = document.querySelector("#btn_igr");
-  const btnAppliance = document.querySelector("#btn_app");
-  const btnUstensils = document.querySelector("#btn_ust");
+  // Manipulation d'interface
   btnAppliance.style.marginLeft = "0px";
   btnUstensils.style.marginLeft = "0px";
   listIng.style.display = "none";
   btnIng.style.display = "block";
+  // insertion du tag a la DOM
   console.log(e.target.id);
   tag.push(e.target.id);
-  keyword.innerHTML += `<div class="btn btn-primary m-1">
+  keyWordDiv.innerHTML += `<div class="btn btn-primary m-1">
        ${e.target.id}<span class="close"><i class="bi bi-x-circle"></i><span></div>`;
+  // Moteur de recherche
 
+  // Si c'est le premier tag en filtre avec le tableau recipes
   if (newArrayRecipe.length == 0) {
     newArrayRecipe = recipes.filter((recipe) =>
       recipe.ingredients.some((rcp) =>
@@ -241,7 +230,9 @@ ul_igr.addEventListener("click", (e) => {
     );
     arrayRecipe = newArrayRecipe;
     console.log(newArrayRecipe);
-  } else if (newArrayRecipe.length > 0) {
+  }
+  // Aprés le filtre se fait par rapport au resultat affiché
+  else if (newArrayRecipe.length > 0) {
     let array = [];
     array = newArrayRecipe.filter((recipe) =>
       recipe.ingredients.some((rcp) =>
@@ -250,26 +241,28 @@ ul_igr.addEventListener("click", (e) => {
     );
     newArrayRecipe = array;
   }
-  arrayRecipe = newArrayRecipe;
   console.log(newArrayRecipe);
-
+  arrayRecipe = newArrayRecipe;
+  // Manipuler la DOM pour afficher les nouveaux resultat
   main.innerHTML = "";
   ul_igr.innerHTML = "";
   ul_ust.innerHTML = "";
   ul_app.innerHTML = "";
   init(arrayRecipe);
 });
-// Recherche avancée par ustensils
+
+// Filtrer les ustensils au click
 ul_ust.addEventListener("click", (e) => {
-  const listUst = document.querySelector("#ust");
-  const btnUst = document.querySelector("#btn_ust");
+  // Manipulation d'interface
   listUst.style.display = "none";
-  btnUst.style.display = "block";
+  btnUstensils.style.display = "block";
+  // Insertion des tag dans la DOM
   console.log(e.target.id);
   tag.push(e.target.id);
-  keyword.innerHTML += `<div class="btn m-1" style="background:#ED6454;color:white">
+  keyWordDiv.innerHTML += `<div class="btn m-1" style="background:#ED6454;color:white">
        ${e.target.id}<span class="close"><i class="bi bi-x-circle"></i><span></div>`;
 
+  // Moteur de recherche
   if (newArrayRecipe.length == 0) {
     newArrayRecipe = recipes.filter((recipe) =>
       recipe.ustensils.some((ust) =>
@@ -289,6 +282,7 @@ ul_ust.addEventListener("click", (e) => {
     console.log(newArrayRecipe);
   }
   arrayRecipe = newArrayRecipe;
+  // Actualisé avec le nouveau resultat
   main.innerHTML = "";
   ul_igr.innerHTML = "";
   ul_ust.innerHTML = "";
@@ -296,15 +290,13 @@ ul_ust.addEventListener("click", (e) => {
   init(arrayRecipe);
 });
 
-// Recherche avancée par appliance
+// Filtrer les apareils au click
 ul_app.addEventListener("click", (e) => {
-  const listApp = document.querySelector("#app");
-  const btnApp = document.querySelector("#btn_app");
   listApp.style.display = "none";
-  btnApp.style.display = "block";
+  btnAppliance.style.display = "block";
   console.log(e.target.id);
   tag.push(e.target.id);
-  keyword.innerHTML += `<div class="btn m-1" style="background:#68D9A4;color:white">
+  keyWordDiv.innerHTML += `<div class="btn m-1" style="background:#68D9A4;color:white">
        ${e.target.id}<span class="close"><i class="bi bi-x-circle"></i><span></div>`;
   if (newArrayRecipe.length == 0) {
     newArrayRecipe = recipes.filter((recipe) =>
@@ -327,16 +319,14 @@ ul_app.addEventListener("click", (e) => {
   init(arrayRecipe);
 });
 
-// Retirer le tag
+// ---- Retirer les tags ----
 keyword.addEventListener("click", (e) => {
-  if (e.target.classList.contains("bi")) {
-    let indexTag = tag.indexOf(e.target.innerText);
-    tag.splice(indexTag, 1);
+  if (e.target.classList.contains("bi-x-circle")) {
+    // let indexTag = tag.indexOf(e.target.innerText);
+    // tag.splice(indexTag, 1);
+    // e.target.parentElement.parentElement.remove();
+    keyWordDiv.innerHTML = "";
+    newArrayRecipe = [];
     init(recipes);
-    e.target.parentElement.parentElement.remove();
-    if (tag.length == 0) {
-      newArrayRecipe = [];
-      // init(recipes);
-    }
   }
 });
