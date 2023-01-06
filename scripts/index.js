@@ -134,6 +134,41 @@ tag_search.addEventListener("input", async () => {
   newArrayRecipe = await search_method(tag_search.value);
 });
 
+// ---- Fonction Tri de recherche avancé ----
+let newRecipes = [];
+async function tri(tag, array) {
+  let tab1 = await getIngredients(array);
+  let tab2 = await getAppareil(array);
+  let tab3 = await getUstensiles(array);
+  console.log(tag);
+  tag.forEach((t) => {
+    if (tab1.includes(t.toUpperCase())) {
+      console.log("1");
+      newRecipes = array.filter((recipe) =>
+        recipe.ingredients.some((rcp) =>
+          rcp.ingredient.toLowerCase().includes(t.toLowerCase())
+        )
+      );
+    }
+    if (tab3.includes(t.toUpperCase())) {
+      console.log("2");
+      newRecipes = array.filter((recipe) =>
+        recipe.ustensils.some((ust) =>
+          ust.toLowerCase().includes(t.toLowerCase())
+        )
+      );
+    }
+    if (tab2.includes(t.toUpperCase())) {
+      console.log("3");
+      newRecipes = array.filter((recipe) =>
+        recipe.appliance.toLowerCase().includes(t.toLowerCase())
+      );
+    }
+  });
+  console.log(newRecipes);
+  return newRecipes;
+}
+
 // ---- les recherches avancées: utilisation d'input ----
 // filtrer les ingrédient au input
 const inputIgr = document.querySelector("#input_igr");
@@ -208,7 +243,7 @@ let arrayRecipe = [];
 let newArrayRecipe = [];
 
 // Filtrer les ingrédient au click
-ul_igr.addEventListener("click", (e) => {
+ul_igr.addEventListener("click", async (e) => {
   // Manipulation d'interface
   btnAppliance.style.marginLeft = "0px";
   btnUstensils.style.marginLeft = "0px";
@@ -220,26 +255,10 @@ ul_igr.addEventListener("click", (e) => {
   keyWordDiv.innerHTML += `<div class="btn btn-primary m-1">
        ${e.target.id}<span class="close"><i class="bi bi-x-circle"></i><span></div>`;
   // Moteur de recherche
-
-  // Si c'est le premier tag en filtre avec le tableau recipes
   if (newArrayRecipe.length == 0) {
-    newArrayRecipe = recipes.filter((recipe) =>
-      recipe.ingredients.some((rcp) =>
-        rcp.ingredient.toLowerCase().includes(tag[tag.length - 1].toLowerCase())
-      )
-    );
-    arrayRecipe = newArrayRecipe;
-    console.log(newArrayRecipe);
-  }
-  // Aprés le filtre se fait par rapport au resultat affiché
-  else if (newArrayRecipe.length > 0) {
-    let array = [];
-    array = newArrayRecipe.filter((recipe) =>
-      recipe.ingredients.some((rcp) =>
-        rcp.ingredient.toLowerCase().includes(tag[tag.length - 1].toLowerCase())
-      )
-    );
-    newArrayRecipe = array;
+    newArrayRecipe = await tri(tag, recipes);
+  } else {
+    newArrayRecipe = await tri(tag, newArrayRecipe);
   }
   console.log(newArrayRecipe);
   arrayRecipe = newArrayRecipe;
@@ -252,7 +271,7 @@ ul_igr.addEventListener("click", (e) => {
 });
 
 // Filtrer les ustensils au click
-ul_ust.addEventListener("click", (e) => {
+ul_ust.addEventListener("click", async (e) => {
   // Manipulation d'interface
   listUst.style.display = "none";
   btnUstensils.style.display = "block";
@@ -264,23 +283,11 @@ ul_ust.addEventListener("click", (e) => {
 
   // Moteur de recherche
   if (newArrayRecipe.length == 0) {
-    newArrayRecipe = recipes.filter((recipe) =>
-      recipe.ustensils.some((ust) =>
-        ust.toLowerCase().includes(tag[tag.length - 1].toLowerCase())
-      )
-    );
-    console.log(newArrayRecipe);
-    arrayRecipe = newArrayRecipe;
-  } else if (newArrayRecipe.length > 0) {
-    let array = [];
-    array = newArrayRecipe.filter((recipe) =>
-      recipe.ustensils.some((ust) =>
-        ust.toLowerCase().includes(tag[tag.length - 1].toLowerCase())
-      )
-    );
-    newArrayRecipe = array;
-    console.log(newArrayRecipe);
+    newArrayRecipe = await tri(tag, recipes);
+  } else {
+    newArrayRecipe = await tri(tag, newArrayRecipe);
   }
+  console.log(newArrayRecipe);
   arrayRecipe = newArrayRecipe;
   // Actualisé avec le nouveau resultat
   main.innerHTML = "";
@@ -291,7 +298,7 @@ ul_ust.addEventListener("click", (e) => {
 });
 
 // Filtrer les apareils au click
-ul_app.addEventListener("click", (e) => {
+ul_app.addEventListener("click", async (e) => {
   listApp.style.display = "none";
   btnAppliance.style.display = "block";
   console.log(e.target.id);
@@ -299,18 +306,11 @@ ul_app.addEventListener("click", (e) => {
   keyWordDiv.innerHTML += `<div class="btn m-1" style="background:#68D9A4;color:white">
        ${e.target.id}<span class="close"><i class="bi bi-x-circle"></i><span></div>`;
   if (newArrayRecipe.length == 0) {
-    newArrayRecipe = recipes.filter((recipe) =>
-      recipe.appliance.toLowerCase().includes(tag[tag.length - 1].toLowerCase())
-    );
-    console.log(newArrayRecipe);
-  } else if (newArrayRecipe.length > 0) {
-    let array = [];
-    array = newArrayRecipe.filter((recipe) =>
-      recipe.appliance.toLowerCase().includes(tag[tag.length - 1].toLowerCase())
-    );
-    newArrayRecipe = array;
-    console.log(newArrayRecipe);
+    newArrayRecipe = await tri(tag, recipes);
+  } else {
+    newArrayRecipe = await tri(tag, newArrayRecipe);
   }
+  console.log(newArrayRecipe);
   arrayRecipe = newArrayRecipe;
   main.innerHTML = "";
   ul_igr.innerHTML = "";
@@ -320,13 +320,19 @@ ul_app.addEventListener("click", (e) => {
 });
 
 // ---- Retirer les tags ----
-keyword.addEventListener("click", (e) => {
+keyword.addEventListener("click", async (e) => {
   if (e.target.classList.contains("bi-x-circle")) {
-    // let indexTag = tag.indexOf(e.target.innerText);
-    // tag.splice(indexTag, 1);
-    // e.target.parentElement.parentElement.remove();
-    keyWordDiv.innerHTML = "";
-    newArrayRecipe = [];
-    init(recipes);
+    let indexTag = tag.indexOf(e.target.innerText);
+    tag.splice(indexTag, 1);
+    e.target.parentElement.parentElement.remove();
+    //keyWordDiv.innerHTML = "";
+    console.log(newArrayRecipe);
+    newArrayRecipe = await tri(tag, recipes);
+    console.log(newArrayRecipe);
+    init(newArrayRecipe);
+    if (tag.length == 0) {
+      init(recipes);
+      newArrayRecipe = [];
+    }
   }
 });
